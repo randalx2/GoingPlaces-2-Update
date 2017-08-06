@@ -13,17 +13,24 @@ using GoingPlaces_2.Models;
 
 namespace GoingPlaces_2.Controllers
 {
+    [RoutePrefix("api/Locations")]
     public class LocationsController : ApiController
     {
         private GoingPlaces_2Context db = new GoingPlaces_2Context();
 
         // GET: api/Locations
+        [Route("")]
+        [HttpGet]
         public IQueryable<Location> GetLocations()
         {
             return db.Locations;
         }
 
         // GET: api/Locations/5
+        // GET: api/Locations/5
+        [ResponseType(typeof(Location))]
+        [Route("{id:int}")]
+        [HttpGet]
         [ResponseType(typeof(Location))]
         public async Task<IHttpActionResult> GetLocation(int id)
         {
@@ -36,8 +43,21 @@ namespace GoingPlaces_2.Controllers
             return Ok(location);
         }
 
+        // GET: api/Locations/5
+        [ResponseType(typeof(Location))]
+        [Route("{name}")]
+        [HttpGet]
+        public IEnumerable<Location> GetLocationByName(string name)
+        {
+            //Get the first contact in the contacts list with the specified id
+            Location[] locationArray = db.Locations.Where<Location>(c => c.Name.Contains(name)).ToArray();
+
+            return locationArray;
+        }
+
         // PUT: api/Locations/5
         [ResponseType(typeof(void))]
+        [HttpPut]
         public async Task<IHttpActionResult> PutLocation(int id, Location location)
         {
             if (!ModelState.IsValid)
@@ -51,6 +71,14 @@ namespace GoingPlaces_2.Controllers
             }
 
             db.Entry(location).State = EntityState.Modified;
+            Location newlocation = db.Locations.FirstOrDefault<Location>(c => c.Id == id);
+
+            if (location != null)
+            {
+                location.Name = newlocation.Name;
+                location.Latitude = newlocation.Latitude;
+                location.Longitude = newlocation.Longitude;
+            }
 
             try
             {
@@ -68,11 +96,13 @@ namespace GoingPlaces_2.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            //return StatusCode(HttpStatusCode.NoContent);
+            return Ok(location);
         }
 
         // POST: api/Locations
         [ResponseType(typeof(Location))]
+        [HttpPost]
         public async Task<IHttpActionResult> PostLocation(Location location)
         {
             if (!ModelState.IsValid)
@@ -83,11 +113,13 @@ namespace GoingPlaces_2.Controllers
             db.Locations.Add(location);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = location.Id }, location);
+            //return CreatedAtRoute("DefaultApi", new { id = location.Id }, location);
+            return Ok(location);
         }
 
         // DELETE: api/Locations/5
         [ResponseType(typeof(Location))]
+        [HttpDelete]
         public async Task<IHttpActionResult> DeleteLocation(int id)
         {
             Location location = await db.Locations.FindAsync(id);

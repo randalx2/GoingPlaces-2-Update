@@ -10,14 +10,19 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using GoingPlaces_2.Models;
+using System.Drawing;
+using System.IO;
 
 namespace GoingPlaces_2.Controllers
 {
+    [RoutePrefix("api/Pictures")]
     public class PicturesController : ApiController
     {
         private GoingPlaces_2Context db = new GoingPlaces_2Context();
 
         // GET: api/Pictures
+        [Route("")]
+        [HttpGet]
         public IQueryable<Picture> GetPictures()
         {
             return db.Pictures;
@@ -25,6 +30,8 @@ namespace GoingPlaces_2.Controllers
 
         // GET: api/Pictures/5
         [ResponseType(typeof(Picture))]
+        [Route("{id:int}")]
+        [HttpGet]
         public async Task<IHttpActionResult> GetPicture(int id)
         {
             Picture picture = await db.Pictures.FindAsync(id);
@@ -35,6 +42,33 @@ namespace GoingPlaces_2.Controllers
 
             return Ok(picture);
         }
+
+        //Local service function to convert images to byte arrays before saving to our database
+        //Pass in the large URL to set the image data
+        public byte[] ImageToArray(string photoUrl)
+        {
+            WebClient web = new WebClient();
+
+            //Download the image from its URL to the server
+            byte[] arr = web.DownloadData(photoUrl);
+
+            return arr;
+        }
+
+        //Use this to return a default image if no image data found on flickr
+        public byte[] ImageToArrayDefault()
+        {
+            Image img = Image.FromFile(@"C:\Batman-Jim-Lee.jpg");
+            byte[] arr;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                arr = ms.ToArray();
+            }
+            return arr;
+        }
+
+
 
         // PUT: api/Pictures/5
         [ResponseType(typeof(void))]
