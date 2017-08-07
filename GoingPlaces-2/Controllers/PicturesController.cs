@@ -156,7 +156,10 @@ namespace GoingPlaces_2.Controllers
 
                         counter = 0;
 
-                        
+                        //Load up myImageList with myImageObject
+                        myImageList = myImageObject.ToList<Picture>();
+
+                        //Find the first instance of the location the user wants in the db ==> avoid duplicates
                         Location location = db.Locations.Where<Location>(c => c.Name.Contains(name)).FirstOrDefault<Location>();
 
                         //If the location is not on our db
@@ -189,39 +192,7 @@ namespace GoingPlaces_2.Controllers
 
                             //Save to images table in the db
                             db.SaveChanges();
-                        }
-
-                        /*
-                        else
-                        {
-                            //If the location was already found on the db
-                            location.Pictures = new Collection<Picture>()
-                            {
-                                new Picture()
-                                {
-                                    Description = image.Description,
-                                    DateTaken = image.DateTaken,
-                                    FlickrImage = image.FlickrImage
-                                }
-                            };
-
-                            //Save the image data
-                            foreach(Picture picture in location.Pictures)
-                            {
-                                db.Pictures.Add(picture);
-                            }
-
-                            //Save to images table in the db
-                            //db.SaveChanges();
-                        }
-                        */
-
-                        //myImageList.Add(image);
-
-
-                        //Convert back to an array
-                        ImageArray = myImageList.ToArray<Picture>();
-                        
+                        }                
                     }
                 }
             }
@@ -229,6 +200,9 @@ namespace GoingPlaces_2.Controllers
             {
                 Console.WriteLine(ex.Message + Environment.NewLine + "Your Internet Connection may be down");
             }
+
+            //Convert back to an array
+            ImageArray = myImageList.ToArray<Picture>();
 
             return ImageArray;
         }
