@@ -9,6 +9,13 @@
     padding-right: 15px;
 }
 
+.MyContainer {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,

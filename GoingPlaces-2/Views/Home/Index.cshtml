@@ -1,24 +1,213 @@
 ﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <h1>My Places</h1>
+    <p class="lead">My Places is an application which returns image data based on your favourite locations</p>
     <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Location Search</h2>
+            <p>Search location by ID or Name. The location table will be filtered for saved locations in the Database.</p>
+            <input type="text" id="searchID" />  Location Name or ID<br /><br />
+            <button onclick="searchLocation()">Search For Location by ID or Name</button>
+
+            <h2>Update Location</h2>
+            <p>Update data specific to the Location table in the database. Remember to enter your old Location ID above first</p>
+            <input type="text" id="locationName" />  New Location Name<br /><br />
+            <input type="text" id="latitude" />  New Latitude<br /><br />
+            <input type="text" id="longitude" />  New Longitude<br /><br />
+            <button onclick="updateLocation()">Update Location</button>
+        </div>
+        <div class="col-md-4">
+            <h2>Post a Test Location</h2>
+            <p>Test POST method with test data</p>
+            <button onclick="addLocation()">Post Location</button>
+
+            <h2>Delete Location</h2>
+            <p>Delete a record in the Location table from the database. Specify its ID or Name in the first text box</p>
+            <button onclick="deleteLocation()">Delete Location</button>
+        </div>
+        <div class="col-md-4">
+            <h2>Image Search</h2>
+            <p>Enter the names of locations to filter through images in the database. If the corresponding image info is not found, we will search on flickr and update accordingly</p>
+            <p>Please be patient during this process as accessing image galleries on flickr can be a long task for retrieving larger images.</p>
+            <input type="text" id="imageName" /> Image Location Name<br /><br />
+            <button onclick="searchImages()">Image Search</button>
+        </div>
     </div>
 </div>
+
+<br />
+
+<div>
+    <h2>Display Location Data</h2>
+    <table id="location" cellpadding="2" cellspacing="2" border="1" width="400">
+        <thead>
+            <tr>
+                <td style="background-color: gray; color: white">LocationID</td>
+                <td style="background-color: gray; color: white">Location Name</td>
+                <td style="background-color: gray; color: white">Latitude</td>
+                <td style="background-color: gray; color:white">Longitude</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<br />
+
+
+<!--<h2>Display Image Data</h2>
+    <table id="imageData" cellpadding="2" cellspacing="2" border="1" width="545">
+        <thead>
+            <tr>
+                <td style="background-color: gray; color: white">ImageID</td>
+                <td style="background-color: gray; color: white">LocationID</td>
+                <td style="background-color: gray; color: white">Description Image 1</td>
+                <td style="background-color: gray; color: white">Description Image 2</td>
+                <td style="background-color: gray; color: white">Description Image 3</td>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+<br />-->
+
+<div class="container"><h2>Retrieved Images</h2></div>
+<br />
+
+
+<div class="MyContainer">
+    <!--Dynamic Javascript to fill the gallery here-->
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.getJSON("api/Locations", function (result) {
+            console.info(result);
+        });
+
+
+        $.getJSON("api/Locations").done(function (data) {
+            $.each(data, function (key, item) {
+                $('#location').append("<tr><td>" + item.Id + "</td>" + "<td>" + item.Name + "</td>" + "<td>" + item.Latitude + "</td>" + "<td>" + item.Longitude + "</td></tr>");
+            });
+        });
+    });
+
+
+
+        $(document).ready(function () {
+            $.getJSON("api/Pictures", function (result) {
+                console.info(result);
+            });
+
+        });
+
+
+            function searchLocation() {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "api/Locations/" + $("#searchID").val(),
+                    success: function (result) {
+                        console.info(result);
+                    }
+                });
+
+                $('#location tbody').remove();
+                $.getJSON("api/Locations/" + $("#searchID").val()).done(function (data) {
+                    $.each(data, function (key, item) {
+                        $('#location').append("<tr><td>" + item.Id + "</td>" + "<td>" + item.Name + "</td>" + "<td>" + item.Latitude + "</td>" + "<td>" + item.Longitude + "</td></tr>");
+                    });
+                });
+            }
+
+            function searchImages() {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "api/Pictures/" + $("#imageName").val(),
+                    success: function (result) {
+                        console.info(result);
+                    }
+                });
+
+                var i = 1;
+                $('.gallery').remove();
+                $.getJSON("api/Pictures/" + $("#imageName").val()).done(function (data) {
+                    $.each(data, function (key, item) {
+
+                        $('.MyContainer').append("<div class=\"gallery\">" + "<a target=\"#\" href=\"#\">" + "<img id=\"Image" + i + "\" src=\"\" width=\"300\" height=\"200\">" + "</a >" +
+                            "<div class=\"desc\">" + item.Description + "<span id=\"Description" + i + "\"></span></div>" + "</div>");
+                        document.getElementById("Image" + i).src = "data:image/jpg;base64," + item.FlickrImage;
+
+                        i = i + 1;
+
+                        /*$('.MyContainer').append("<div class=\"gallery\">" + "<a target=\"#\" href=\"#\">" + "<img id=\"Image" + i + "\" src=\"\" width=\"300\" height=\"200\">" + "</a >" +
+                            "<div class=\"desc\">" + item.Description2 + "<span id=\"Description" + i + "\"></span></div>" + "</div>");
+                        document.getElementById("Image" + i).src = "data:image/jpg;base64," + item.Image2;
+
+                        i = i + 1;
+
+                        $('.MyContainer').append("<div class=\"gallery\">" + "<a target=\"#\" href=\"#\">" + "<img id=\"Image" + i + "\" src=\"\" width=\"300\" height=\"200\">" + "</a >" +
+                            "<div class=\"desc\">" + item.Description3 + "<span id=\"Description" + i + "\"></span></div>" + "</div>");
+                        document.getElementById("Image" + i).src = "data:image/jpg;base64," + item.Image3;
+
+                        i = i + 1;*/
+                    });
+                });
+            }
+
+            function addLocation() {
+                var newLocation = {
+                    "Id": 0,
+                    "Name": "Test Location 1",
+                    "Latitude": 87.987,
+                    "Longitude": 56.234
+                }
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "api/Locations/",
+                    data: newLocation,
+                    success: function (result) {
+                        console.info(result);
+                    }
+                });
+            }
+
+            function deleteLocation() {
+                $.ajax({
+                    type: "DELETE",
+                    dataType: "json",
+                    url: "api/Locations/" + $("#searchID").val(),
+                    success: function (result) {
+                        console.info(result);
+                    }
+                });
+            }
+
+            function updateLocation() {
+                var newLocation = {
+                    "Id": $("#searchID").val(),
+                    "Name": $("#locationName").val(),
+                    "Latitude": $("#latitude").val(),
+                    "Longitude": $("#longitude").val()
+                }
+
+                $.ajax({
+                    type: "PUT",
+                    dataType: "json",
+                    data: newLocation,
+                    url: "api/Locations/" + $("#searchID").val(),
+                    success: function (result) {
+                        console.info(result);
+                    }
+                });
+            }
+</script>
+
+

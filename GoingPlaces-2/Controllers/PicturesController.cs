@@ -100,9 +100,17 @@ namespace GoingPlaces_2.Controllers
 
             //If we have 0 entries in the list corresponding to the search name then check flickr
 
-            //Initialize a 4 grid gallery row
-            Picture[] myImageObject = new Picture[4]
+            //Initialize a gallery of 12 pics
+            Picture[] myImageObject = new Picture[12]
             {
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
@@ -126,7 +134,7 @@ namespace GoingPlaces_2.Controllers
                         int counter = 0;
                         //4 photos per image object
 
-                        for (int j = 0; j < 4; j++)
+                        for (int j = 0; j < 12; j++)
                         {
                             if (counter < photos.Count)
                             {
@@ -168,6 +176,9 @@ namespace GoingPlaces_2.Controllers
 
                                 //Save the new location and its related data
                                 db.Locations.Add(flickrLocation);
+
+                                //Save to images table in the db
+                                //db.SaveChanges();
                             }
                             else
                             {
@@ -187,6 +198,9 @@ namespace GoingPlaces_2.Controllers
                                 {
                                     db.Pictures.Add(picture);
                                 }
+
+                                //Save to images table in the db
+                                //db.SaveChanges();
                             }
 
                             myImageList.Add(image);
@@ -202,9 +216,6 @@ namespace GoingPlaces_2.Controllers
                 Console.WriteLine(ex.Message + Environment.NewLine + "Your Internet Connection may be down");
             }
 
-
-            //Save to images table in the db
-            db.SaveChanges();
             return ImageArray;
         }
 
