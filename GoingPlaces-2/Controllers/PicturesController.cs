@@ -101,7 +101,7 @@ namespace GoingPlaces_2.Controllers
             //If we have 0 entries in the list corresponding to the search name then check flickr
 
             //Initialize a gallery of 12 pics
-            Picture[] myImageObject = new Picture[12]
+            Picture[] myImageObject = new Picture[8]
             {
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
@@ -111,10 +111,10 @@ namespace GoingPlaces_2.Controllers
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
-                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
-                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
-                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
-                new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                //new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                //new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                //new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
+                //new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
             };
 
 
@@ -134,7 +134,7 @@ namespace GoingPlaces_2.Controllers
                         int counter = 0;
                         //4 photos per image object
 
-                        for (int j = 0; j < 12; j++)
+                        for (int j = 0; j < 8; j++)
                         {
                             if (counter < photos.Count)
                             {
@@ -178,7 +178,7 @@ namespace GoingPlaces_2.Controllers
                                 db.Locations.Add(flickrLocation);
 
                                 //Save to images table in the db
-                                //db.SaveChanges();
+                                db.SaveChanges();
                             }
                             else
                             {
@@ -200,7 +200,7 @@ namespace GoingPlaces_2.Controllers
                                 }
 
                                 //Save to images table in the db
-                                //db.SaveChanges();
+                                db.SaveChanges();
                             }
 
                             myImageList.Add(image);
@@ -216,6 +216,7 @@ namespace GoingPlaces_2.Controllers
                 Console.WriteLine(ex.Message + Environment.NewLine + "Your Internet Connection may be down");
             }
 
+            //db.SaveChanges();
             return ImageArray;
         }
 
