@@ -100,7 +100,7 @@ namespace GoingPlaces_2.Controllers
 
             //If we have 0 entries in the list corresponding to the search name then check flickr
 
-            //Initialize
+            //Initialize a 4 grid gallery row
             Picture[] myImageObject = new Picture[4]
             {
                 new Picture() { Id = -1, LocationId = -1, Description = "Image Not Found", FlickrImage = ImageToArrayDefault()},
@@ -124,7 +124,7 @@ namespace GoingPlaces_2.Controllers
                     if (photos.Count > 0)
                     {
                         int counter = 0;
-                        //3 photos per image object
+                        //4 photos per image object
 
                         for (int j = 0; j < 4; j++)
                         {
@@ -210,6 +210,7 @@ namespace GoingPlaces_2.Controllers
 
         // PUT: api/Pictures/5
         [ResponseType(typeof(void))]
+        [HttpPut]
         public async Task<IHttpActionResult> PutPicture(int id, Picture picture)
         {
             if (!ModelState.IsValid)
@@ -245,6 +246,7 @@ namespace GoingPlaces_2.Controllers
 
         // POST: api/Pictures
         [ResponseType(typeof(Picture))]
+        [HttpPost]
         public async Task<IHttpActionResult> PostPicture(Picture picture)
         {
             if (!ModelState.IsValid)
@@ -260,6 +262,7 @@ namespace GoingPlaces_2.Controllers
 
         // DELETE: api/Pictures/5
         [ResponseType(typeof(Picture))]
+        [HttpDelete]
         public async Task<IHttpActionResult> DeletePicture(int id)
         {
             Picture picture = await db.Pictures.FindAsync(id);
