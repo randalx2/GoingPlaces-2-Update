@@ -47,12 +47,22 @@ namespace GoingPlaces_2.Controllers
         [ResponseType(typeof(Location))]
         [Route("{name}")]
         [HttpGet]
-        public IEnumerable<Location> GetLocationByName(string name)
+        public IHttpActionResult GetLocationByName(string name)
         {
             //Get the first contact in the contacts list with the specified id
-            Location[] locationArray = db.Locations.Where<Location>(c => c.Name.Contains(name)).ToArray();
+            //Location[] locationArray = db.Locations.Where<Location>(c => c.Name.Contains(name)).ToArray();
+            //return locationArray;
 
-            return locationArray;
+            //Location location = await db.Locations.FindAsync(name);
+
+            Location location = db.Locations.Where<Location>(c => c.Name.Contains(name)).FirstOrDefault<Location>();
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(location);
         }
 
         // PUT: api/Locations/5
