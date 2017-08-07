@@ -117,10 +117,15 @@
                 });
 
                 $('#location tbody').remove();
-                $.getJSON("api/Locations/" + $("#searchID").val()).done(function (data) {
+
+                /*$.getJSON("api/Locations/" + $("#searchID").val()).done(function (data) {
                     $.each(data, function (key, item) {
                         $('#location').append("<tr><td>" + item.Id + "</td>" + "<td>" + item.Name + "</td>" + "<td>" + item.Latitude + "</td>" + "<td>" + item.Longitude + "</td></tr>");
                     });
+                });*/
+
+                $.getJSON("api/Locations/" + $("#searchID").val()).done(function (data) {
+                    $('#location').append("<tr><td>" + data.Id + "</td>" + "<td>" + data.Name + "</td>" + "<td>" + data.Latitude + "</td>" + "<td>" + data.Longitude + "</td></tr>");
                 });
             }
 

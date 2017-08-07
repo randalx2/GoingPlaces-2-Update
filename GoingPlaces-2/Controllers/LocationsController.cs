@@ -54,15 +54,16 @@ namespace GoingPlaces_2.Controllers
             //return locationArray;
 
             //Location location = await db.Locations.FindAsync(name);
-
+        
             Location location = db.Locations.Where<Location>(c => c.Name.Contains(name)).FirstOrDefault<Location>();
-
+            
             if (location == null)
             {
                 return NotFound();
             }
 
             return Ok(location);
+            
         }
 
         // PUT: api/Locations/5
