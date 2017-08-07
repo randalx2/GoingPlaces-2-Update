@@ -92,7 +92,9 @@ namespace GoingPlaces_2.Controllers
             var options = new PhotoSearchOptions() { Tags = name, PerPage = 12, Page = 1, Extras = PhotoSearchExtras.LargeUrl | PhotoSearchExtras.Tags };
 
             //This return all image objects including main description, landmark id and secondary images
-            Picture[] ImageArray = db.Pictures.Where<Picture>(c => (c.Description.Contains(name))).ToArray();
+            //Using the foreing key to track images for each location in our db
+
+            Picture[] ImageArray = db.Pictures.Where<Picture>(c => (c.Description.Contains(name)) || (c.Location.Name == name)).ToArray();
 
             //If the location or any duplicate of it is not found in the ImageArray the array size count will be O
             //To make it easier convert this array to a list object for now
@@ -154,60 +156,72 @@ namespace GoingPlaces_2.Controllers
 
                         counter = 0;
 
-                        foreach (Picture image in myImageObject)
+                        
+                        Location location = db.Locations.Where<Location>(c => c.Name.Contains(name)).FirstOrDefault<Location>();
+
+                        //If the location is not on our db
+                        if (location == null)
                         {
-                            Location location = db.Locations.Where<Location>(c => c.Name.Contains(name)).FirstOrDefault<Location>();
-
-                            //If the location is not on our db
-                            if(location == null)
+                            Location flickrLocation = new Location()
                             {
-                                Location flickrLocation = new Location()
+                                Name = name,
+                                Latitude = 0,
+                                Longitude = 0,
+                                Pictures = new Collection<Picture>()
                                 {
-                                    Name = name,
-                                    Latitude = 0,
-                                    Longitude = 0,
-                                    Pictures = new Collection<Picture>()
-                                     {
-                                         new Picture(){Description = image.Description,
-                                         DateTaken = image.DateTaken,
-                                         FlickrImage = image.FlickrImage}
-                                     }
-                                };
-
-                                //Save the new location and its related data
-                                db.Locations.Add(flickrLocation);
-
-                                //Save to images table in the db
-                                //db.SaveChanges();
-                            }
-                            else
-                            {
-                                //If the location was already found on the db
-                                location.Pictures = new Collection<Picture>()
-                                {
-                                    new Picture()
-                                    {
-                                        Description = image.Description,
-                                        DateTaken = image.DateTaken,
-                                        FlickrImage = image.FlickrImage
-                                    }
-                                };
-
-                                //Save the image data
-                                foreach(Picture picture in location.Pictures)
-                                {
-                                    db.Pictures.Add(picture);
+                                    new Picture(){Description = myImageObject[0].Description, DateTaken = myImageObject[0].DateTaken, FlickrImage = myImageObject[0].FlickrImage},
+                                    new Picture(){Description = myImageObject[1].Description, DateTaken = myImageObject[1].DateTaken, FlickrImage = myImageObject[1].FlickrImage},
+                                    new Picture(){Description = myImageObject[2].Description, DateTaken = myImageObject[2].DateTaken, FlickrImage = myImageObject[2].FlickrImage},
+                                    new Picture(){Description = myImageObject[3].Description, DateTaken = myImageObject[3].DateTaken, FlickrImage = myImageObject[3].FlickrImage},
+                                    new Picture(){Description = myImageObject[4].Description, DateTaken = myImageObject[4].DateTaken, FlickrImage = myImageObject[4].FlickrImage},
+                                    new Picture(){Description = myImageObject[5].Description, DateTaken = myImageObject[5].DateTaken, FlickrImage = myImageObject[5].FlickrImage},
+                                    new Picture(){Description = myImageObject[6].Description, DateTaken = myImageObject[6].DateTaken, FlickrImage = myImageObject[6].FlickrImage},
+                                    new Picture(){Description = myImageObject[7].Description, DateTaken = myImageObject[7].DateTaken, FlickrImage = myImageObject[7].FlickrImage},
+                                    new Picture(){Description = myImageObject[8].Description, DateTaken = myImageObject[8].DateTaken, FlickrImage = myImageObject[8].FlickrImage},
+                                    new Picture(){Description = myImageObject[9].Description, DateTaken = myImageObject[9].DateTaken, FlickrImage = myImageObject[9].FlickrImage},
+                                    new Picture(){Description = myImageObject[10].Description, DateTaken = myImageObject[10].DateTaken, FlickrImage = myImageObject[10].FlickrImage},
+                                    new Picture(){Description = myImageObject[11].Description, DateTaken = myImageObject[11].DateTaken, FlickrImage = myImageObject[11].FlickrImage}
                                 }
+                            };
 
-                                //Save to images table in the db
-                                //db.SaveChanges();
+                            //Save the new location and its related data
+                            db.Locations.Add(flickrLocation);
+
+                            //Save to images table in the db
+                            db.SaveChanges();
+                        }
+
+                        /*
+                        else
+                        {
+                            //If the location was already found on the db
+                            location.Pictures = new Collection<Picture>()
+                            {
+                                new Picture()
+                                {
+                                    Description = image.Description,
+                                    DateTaken = image.DateTaken,
+                                    FlickrImage = image.FlickrImage
+                                }
+                            };
+
+                            //Save the image data
+                            foreach(Picture picture in location.Pictures)
+                            {
+                                db.Pictures.Add(picture);
                             }
 
-                            myImageList.Add(image);
+                            //Save to images table in the db
+                            //db.SaveChanges();
                         }
+                        */
+
+                        //myImageList.Add(image);
+
 
                         //Convert back to an array
                         ImageArray = myImageList.ToArray<Picture>();
+                        
                     }
                 }
             }
